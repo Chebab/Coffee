@@ -8,6 +8,8 @@
 class Line;
 class Point;
 class Vector2D;
+//Up until this point it works
+
 class PolygonType
 {
 private:
