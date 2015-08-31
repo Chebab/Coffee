@@ -47,12 +47,12 @@ public:
 		return Vector2D(v1.x - v2.x, v1.y - v2.y);
 	}
 
-	static inline float ScalarProduct(Vector2D& v1, Vector2D& v2){
-		return v1.x * v2.x + v1.y * v2.y;
+	inline float ScalarProduct(Vector2D& v1){
+		return x * v1.x + y * v1.y;
 	}
 	// P(v,u) = (v * u)/(v * v)*v
 	inline Vector2D OrthoProjection(Vector2D& v1, Vector2D& v2){
-		return (ScalarProduct(v1, v2) / ScalarProduct(v2, v2)) * v1;
+		return (v1.ScalarProduct(v2) / v2.ScalarProduct(v2)) * v1;
 	} 
 };
 

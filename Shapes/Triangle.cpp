@@ -18,6 +18,7 @@ Triangle::Triangle(float xp1,float yp1,float xp2, float yp2,
 	this->y1 = yp1;
 	this->y2 = yp2;
 	this->y3 = yp3;
+
 }
 
 Triangle::Triangle(Point p1, Point p2, Point p3){
@@ -71,10 +72,13 @@ bool Triangle::Intersect(Point& other){
 
 	// source: http://www.blackpawn.com/texts/pointinpoly/
 
+    Point line1 = this->getFirstLineSegment();
+    Point line2 = this->getSecondLineSegment();
+    Point line3 = this->getThirdLineSegment();
 	// Get vectors
-	Vector2D Vector_A = Vector2D(this->getFirstLineSegment());
-	Vector2D Vector_B = Vector2D(this->getSecondLineSegment());
-	Vector2D Vector_C = Vector2D(this->getThirdLineSegment());
+	Vector2D Vector_A = Vector2D(line1);
+	Vector2D Vector_B = Vector2D(line2);
+	Vector2D Vector_C = Vector2D(line3);
 	Vector2D Vector_P = Vector2D(other);
 
 	// Compute vectors        
@@ -88,11 +92,11 @@ bool Triangle::Intersect(Point& other){
 
 	// Compute dot product
 
-	float dot00 = Vector2D::ScalarProduct(v0, v0);
-	float dot01 = Vector2D::ScalarProduct(v0, v1);
-	float dot02 = Vector2D::ScalarProduct(v0, v2);
-	float dot11 = Vector2D::ScalarProduct(v1, v1);
-	float dot12 = Vector2D::ScalarProduct(v1, v2);
+	float dot00 = v0.Vector2D::ScalarProduct(v0);
+	float dot01 = v0.Vector2D::ScalarProduct(v1);
+	float dot02 = v0.Vector2D::ScalarProduct(v2);
+	float dot11 = v1.Vector2D::ScalarProduct(v1);
+	float dot12 = v1.Vector2D::ScalarProduct(v2);
 
 	float invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
 	float u = (dot11 * dot02 - dot01 * dot12) * invDenom;

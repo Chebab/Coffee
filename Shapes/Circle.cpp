@@ -92,6 +92,9 @@ bool Circle::Intersect(Line& other){
 
 	return startInside || endInside || middleInside;
 }
+bool Circle::Intersect(Triangle& other){
+    return false;
+}
 // TODO
 /*
 bool Circle::Intersect(Triangle& other)

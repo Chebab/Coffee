@@ -5,7 +5,7 @@
 #define TILE_H
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <SDL2_image/SDL_image.h>
 
 static const int TILE_SIZE 	= 32;
 //static const int INT_MAX	= 65535;

@@ -31,7 +31,7 @@ public:
 	bool Intersect(Circle& other);
 	bool Intersect(Point& other);
 	bool Intersect(Line& other);
-	//bool Intersect(Triangle& other);
+	bool Intersect(Triangle& other);
 	/*
 	bool Intersect(Rectangle*);
 	bool Intersect(Polygon*);

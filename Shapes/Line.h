@@ -14,6 +14,8 @@ public:
 	Line(float,float,float,float);
 	Line(Point,Point);
 
+	void toPoints();
+
 	float getFirstXpos();
 	float getFirstYpos();
 	float getSecondXpos();
@@ -24,6 +26,8 @@ public:
 
 	Vector2D getLineVector();
 
+    bool IsLeft(Point&);
+    
 	//Methods for checking collision
 	bool Intersect(Point& other);
 	bool Intersect(Line& other);

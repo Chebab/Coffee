@@ -18,7 +18,7 @@ public:
 	float getXpos();
 	float getYpos();
 	//Methods for setting data
-	void setXpos(float)	;
+	void setXpos(float);
 	void setYpos(float);
 	//Methods for calculating the distance between points
 	float distance(Point&);

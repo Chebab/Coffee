@@ -3,12 +3,13 @@
 #include "Circle.h"
 #include "Point.h"
 #include <iostream>
+#include "Shapes.h"
 
 using namespace std;
 class Point;
 class Circle;
 
-int main(int argc, char** args){
+int shapemain(int argc, char** args){
 	cout << "True is: " << true << ". False is: " << false << endl;
 
 	Circle c1 = Circle(5,5,10);

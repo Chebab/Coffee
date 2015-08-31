@@ -1,6 +1,6 @@
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <SDL2_image/SDL_image.h>
 #include <chrono>
 #include <thread>
 #include <stdio.h>
@@ -8,6 +8,22 @@
 #include "Maps/Map.h"
 #include <iostream>
 #include "camera.h"
+#include "Shapes/Shapes.h"
+#include "ObjectTesters.h"
+
+#include <stdio.h>  /* defines FILENAME_MAX */
+#ifdef WINDOWS
+#include <direct.h>
+#define GetCurrentDir _getcwd
+#else
+#include <unistd.h>
+#define GetCurrentDir getcwd
+#endif
+
+
+
+
+
 using namespace std;
 
 const int SCREEN_WIDTH = 640;
@@ -31,6 +47,14 @@ SDL_Renderer* gRenderer = NULL;
 SDL_Texture* grass = NULL;
 SDL_Texture* tree = NULL;
 SDL_Texture* trans = NULL;
+SDL_Texture* redCircle = NULL;
+SDL_Texture* purpleCircle = NULL;
+
+CircleObject myObject;
+CircleObject otherObject;
+float xVelocity = 0;
+float yVelocity = 0;
+bool moveBack = false;
 
 //The Currently loaded map
 Map* loadedMap = NULL;
@@ -74,12 +98,14 @@ bool init() {
 		printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
 		return false;
 	}
+
+    
 	// Initialize one map
-	myMap = Map(xTileLength, yTileLength);
-	loadedMap = &myMap;
+	//myMap = Map(xTileLength, yTileLength);
+	//loadedMap = &myMap;
 
 	// Initialize the Camera
-	cam = Camera( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, loadedMap);
+	//cam = Camera( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, loadedMap);
 
 	return true;
 }
@@ -104,7 +130,20 @@ bool loadMedia(){
 		printf( "Failed to load texture image!\n" );
 		return false;
 	}
-
+    redCircle = loadTexture("Textures/64x64_circle.png");
+    if( trans == NULL )
+    {
+        printf( "Failed to load texture image!\n" );
+        return false;
+    }
+    purpleCircle = loadTexture("Textures/64x64_circle_purp.png");
+    if( trans == NULL )
+    {
+        printf( "Failed to load texture image!\n" );
+        return false;
+    }
+    
+    /*
 	//temp variable
 	Tile* temp = NULL;
 	//Setting the loaded texture to each of the tiles
@@ -120,13 +159,17 @@ bool loadMedia(){
 			}
 		}
 	}
-
+     */
 
 	return true;
 }
 void close(){
 	//Free loaded image
 	SDL_DestroyTexture(grass);
+    SDL_DestroyTexture(tree);
+    SDL_DestroyTexture(trans);
+    SDL_DestroyTexture(redCircle);
+    SDL_DestroyTexture(purpleCircle);
 	grass = NULL;
 	// Map free
 	loadedMap = NULL;
@@ -145,6 +188,15 @@ SDL_Texture* loadTexture( std::string path){
 	SDL_Texture* newTexture = NULL;
 
 	//Load image at specified path
+    /*
+    char cCurrentPath[FILENAME_MAX];
+    
+    if (!GetCurrentDir(cCurrentPath, sizeof(cCurrentPath)))
+    {
+        return nullptr;
+    }
+    printf ("The current working directory is %s", cCurrentPath);
+     */
 	SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
 	if( loadedSurface == NULL )
 	{
@@ -171,9 +223,12 @@ void drawScreen(){
 	
 	//Clear screen
 	SDL_RenderClear( gRenderer );
-	cam.renderToCamera( gRenderer );
-
-	//SDL_Rect rect = {50, 50, 256, 256};	
+	//cam.renderToCamera( gRenderer );
+    
+    SDL_RenderCopy(gRenderer,myObject.texture,NULL,&myObject.drawSurface);
+    SDL_RenderCopy(gRenderer,otherObject.texture,NULL,&otherObject.drawSurface);
+    
+	//SDL_Rect rect = {50, 50, 256, 256};
 	//SDL_RenderCopy(gRenderer, tree, NULL, &rect);
 	//SDL_Rect rect1 = {75, 75, 256, 256};
 	//SDL_RenderCopy(gRenderer, trans, NULL, &rect1);
@@ -185,16 +240,23 @@ void handleKeyPressDown(int keycode){
 	//cout << "derp" << endl;
 	switch(keycode) {
 		case SDLK_UP:
-			cam.setMoveValueY(-1);
+			//cam.setMoveValueY(-1);
+            yVelocity = -1;
 			break;
 		case SDLK_DOWN:
-			cam.setMoveValueY(1);
+			//cam.setMoveValueY(1);
+            yVelocity = 1;
 			break;
 		case SDLK_LEFT:
-			cam.setMoveValueX(-1);
+			//cam.setMoveValueX(-1);
+            xVelocity = -1;
 			break;
 		case SDLK_RIGHT:
-			cam.setMoveValueX(1);
+			//cam.setMoveValueX(1);
+            xVelocity = 1;
+            break;
+        case SDLK_SPACE:
+            moveBack = true;
 		default:
 		break;
 	}
@@ -205,16 +267,20 @@ void handleKeyPressUp(int keycode){
 	switch(keycode) {
 
 		case SDLK_UP:
-			cam.setMoveValueY(0);
+			//cam.setMoveValueY(0);
+            yVelocity = 0;
 			break;
 		case SDLK_DOWN:
-			cam.setMoveValueY(0);
+			//cam.setMoveValueY(0);
+            yVelocity = 0;
 			break;
 		case SDLK_LEFT:
-			cam.setMoveValueX(0);
+			//cam.setMoveValueX(0);
+            xVelocity = 0;
 			break;
 		case SDLK_RIGHT:
-			cam.setMoveValueX(0);
+			//cam.setMoveValueX(0);
+            xVelocity = 0;
 		default:
 		break;
 	}
@@ -222,6 +288,9 @@ void handleKeyPressUp(int keycode){
 
 
 int main(int argc, char* args[]){
+    
+
+    
 	//Start up SDL and create window
 	if( !init() )
 	{
@@ -235,7 +304,10 @@ int main(int argc, char* args[]){
 			printf( "Failed to load media!\n" );
 		}
 		else
-		{	
+		{
+            // Init the testobjects
+            myObject = CircleObject(50.0,50.0,32.0,redCircle);
+            otherObject = CircleObject(100.0,100.0,32.0,purpleCircle);
 			//Main loop flag
 			bool quit = false;
 			//Event variable
@@ -260,6 +332,11 @@ int main(int argc, char* args[]){
 					}
 				}
 			//std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            myObject.calculateMove(xVelocity, yVelocity, otherObject);
+                if (moveBack) {
+                    myObject = CircleObject(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 32, redCircle);
+                    moveBack = false;
+                }
 			//Update the camera
 			cam.updateCamera();
 			//draw the screen

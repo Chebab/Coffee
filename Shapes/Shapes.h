@@ -6,12 +6,14 @@
 #include "Math.h"
 #include <iostream>
 #include <vector>
+
 //#include "PolygonType.h"
 
 class Point;
 class Circle;
 class Line;
 class Vector2D;
+class Triangle;
 //class Triangle;
 class Shapes
 {
@@ -28,6 +30,7 @@ public:
 #include "Point.h"
 #include "Circle.h"
 #include "Line.h"
+#include "Triangle.h"
 #include "2DVectorMath.h"
 //#include "Triangle.h"
 

@@ -23,6 +23,10 @@ Line::Line(Point p1, Point p2){
 	this->y2 = p2.getYpos();
 }
 
+void toPoints(){
+	
+}
+
 float Line::getFirstXpos(){
 	return x1;
 }
@@ -46,6 +50,11 @@ Point Line::getSecondLineSegment(){
 
 Vector2D Line::getLineVector(){
 	return Vector2D(x2-x1, y2-y1);
+}
+
+bool Line::IsLeft(Point& other)
+{
+   	return ((x2 - x1) * (other.y - y1) - (y2 - y1) * (other.x - x1)) > 0;
 }
 
 //Methods for checking collision

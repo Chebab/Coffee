@@ -56,7 +56,7 @@ Tile* Map::getNeighbours(int xpos, int ypos){
 
 // Get the numbered tile
 Tile* Map::getTile(int xpos, int ypos){
-	Tile *temp;
+	//Tile *temp;
 	if(xpos > (tileWidth-1) || ypos > (tileHeight - 1) || ypos < 0 || xpos < 0){
 		//cout << "getTile is giving me null, tileWidth is " << tileWidth<< " xpos is " << xpos << endl;
 		return NULL;
