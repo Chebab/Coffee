@@ -11,14 +11,14 @@
 #include <SDL2/SDL.h>
 #include "Shapes/Shapes.h"
 #include <SDL2_image/SDL_image.h>
-
+class RectObject;
 class CircleObject
 {
 private:
     float radius;
     float xPos;
     float yPos;
-
+    
     
 public:
     SDL_Texture* texture;
@@ -38,20 +38,37 @@ public:
         return Circle(xPos,yPos,radius);
     }
     
-    bool calculateMove(float xVelocity, float yVelocity, CircleObject& other)
-    {
-        Circle thisCircle = Circle(xPos + xVelocity, yPos + yVelocity,radius);
-        Circle otherCircle = other.getCircle();
-        if (!thisCircle.Intersect(otherCircle)) {
-            this->xPos = xPos + xVelocity;
-            this->yPos = yPos + yVelocity;
-            drawSurface.x =(int)(xPos-radius);
-            drawSurface.y =(int)(yPos-radius);
-            return true;
-        }
+    bool calculateMove(float xVelocity, float yVelocity, CircleObject& other);
+    bool calculateMove(float xVelocity, float yVelocity, RectObject& other);
+};
 
-        return false;
+class RectObject
+{
+private:
+    float start_x;
+    float start_y;
+    float length;
+public:
+    SDL_Texture* texture;
+    SDL_Rect drawSurface;
+    RectObject(){}
+    RectObject(float x,float y, float length,SDL_Texture* text)
+    {
+        this->length=length;
+        this->start_x=x;
+        this->start_y=y;
+        this->texture = text;
+        drawSurface = {(int)(start_x),(int)(start_y),64,64};
     }
+    
+    Rectangle getRect()
+    {
+        Point p = Point(start_x,start_y);
+        return Rectangle(p,length);
+    }
+    
+    bool calculateMove(float xVelocity, float yVelocity, RectObject& other);
+    bool calculateMove(float xVelocity, float yVelocity, CircleObject& other);
 };
 
 #endif

@@ -17,6 +17,5 @@ int shapemain(int argc, char** args){
 	cout << c1.Intersect(c2) << endl;;
 	Point(3,3);
 
-
 	return 0;
 }

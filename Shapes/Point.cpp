@@ -49,6 +49,10 @@ bool Point::Intersect(Line& other)
 {
 	return other.Intersect(*this);
 }
+bool Point::Intersect(Polygon& other)
+{
+    return other.Intersect(*this);
+}
 /*
 bool Point::Intersect(Triangle& other)
 {

@@ -18,7 +18,15 @@ Triangle::Triangle(float xp1,float yp1,float xp2, float yp2,
 	this->y1 = yp1;
 	this->y2 = yp2;
 	this->y3 = yp3;
-
+    
+    Point p1 = Point(x1,y1);
+    Point p2 = Point(x2,y2);
+    Point p3 = Point(x3,y3);
+    
+    points.push_back(p1);
+    points.push_back(p2);
+    points.push_back(p3);
+    
 }
 
 Triangle::Triangle(Point p1, Point p2, Point p3){
@@ -123,20 +131,7 @@ bool Triangle::Intersect(Circle& other)
 // source: http://www.codeproject.com/Articles/15573/D-Polygon-Collision-Detection
 bool Triangle::Intersect(Triangle& other)
 {
-	// Get the lines of the triangle
-	Line l1 = Line(getFirstLineSegment(), getSecondLineSegment());
-	Line l2 = Line(getSecondLineSegment(), getThirdLineSegment());
-	Line l3 = Line(getThirdLineSegment(), getFirstLineSegment());
-
-	// Check if any of this triangles sides intersect with the other triangle
-	return other.Intersect(l1) || other.Intersect(l2) || other.Intersect(l3);
-
-
-
-
-
-
-
-
-
+    // Use the method in polygon
+    Polygon thisPoly = Polygon(points);
+    return thisPoly.Intersect(other);
 }

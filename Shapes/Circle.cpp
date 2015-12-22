@@ -95,6 +95,10 @@ bool Circle::Intersect(Line& other){
 bool Circle::Intersect(Triangle& other){
     return false;
 }
+bool Circle::Intersect(Polygon& other)
+{
+    return other.Intersect(*this);
+}
 // TODO
 /*
 bool Circle::Intersect(Triangle& other)

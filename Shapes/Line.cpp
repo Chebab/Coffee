@@ -124,6 +124,10 @@ bool Line::Intersect(Line& other){
 bool Line::Intersect(Circle& other){
 	return other.Intersect(*this);
 }
+
+bool Line::Intersect(Polygon& other){
+    return false;
+}
 /*
 bool Line::Intersect(Triangle& other)
 {

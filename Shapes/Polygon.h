@@ -1,16 +1,16 @@
 //Polygon.h
 
-#ifndef POLYGONTYPE_H
-#define POLYGONTYPE_H
+#ifndef POLYGON_H
+#define POLYGON_H
 
 
 class Line;
 class Point;
 class Vector2D;
+class Shapes;
 //Up until this point it works
 
 #include "Shapes.h"
-#include "Point.h"
 class Polygon : Shapes
 {
 private:
@@ -34,5 +34,6 @@ public:
     bool Intersect(Circle&);
 
 };
-
+#include "Rectangle.h"
+#include "Triangle.h"
 #endif

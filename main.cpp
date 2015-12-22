@@ -49,9 +49,11 @@ SDL_Texture* tree = NULL;
 SDL_Texture* trans = NULL;
 SDL_Texture* redCircle = NULL;
 SDL_Texture* purpleCircle = NULL;
+SDL_Texture* greenRect = NULL;
+SDL_Texture* orangeRect = NULL;
 
 CircleObject myObject;
-CircleObject otherObject;
+RectObject otherObject;
 float xVelocity = 0;
 float yVelocity = 0;
 bool moveBack = false;
@@ -142,6 +144,18 @@ bool loadMedia(){
         printf( "Failed to load texture image!\n" );
         return false;
     }
+    greenRect = loadTexture("Textures/64x64_rect_green.png");
+    if( trans == NULL )
+    {
+        printf( "Failed to load texture image!\n" );
+        return false;
+    }
+    orangeRect = loadTexture("Textures/64x64_rect_orange.png");
+    if( trans == NULL )
+    {
+        printf( "Failed to load texture image!\n" );
+        return false;
+    }
     
     /*
 	//temp variable
@@ -170,6 +184,8 @@ void close(){
     SDL_DestroyTexture(trans);
     SDL_DestroyTexture(redCircle);
     SDL_DestroyTexture(purpleCircle);
+    SDL_DestroyTexture(greenRect);
+    SDL_DestroyTexture(orangeRect);
 	grass = NULL;
 	// Map free
 	loadedMap = NULL;
@@ -238,22 +254,23 @@ void drawScreen(){
 
 void handleKeyPressDown(int keycode){
 	//cout << "derp" << endl;
+    const float velo =0.5;
 	switch(keycode) {
 		case SDLK_UP:
 			//cam.setMoveValueY(-1);
-            yVelocity = -1;
+            yVelocity = -velo;
 			break;
 		case SDLK_DOWN:
 			//cam.setMoveValueY(1);
-            yVelocity = 1;
+            yVelocity = velo;
 			break;
 		case SDLK_LEFT:
 			//cam.setMoveValueX(-1);
-            xVelocity = -1;
+            xVelocity = -velo;
 			break;
 		case SDLK_RIGHT:
 			//cam.setMoveValueX(1);
-            xVelocity = 1;
+            xVelocity = velo;
             break;
         case SDLK_SPACE:
             moveBack = true;
@@ -306,8 +323,8 @@ int main(int argc, char* args[]){
 		else
 		{
             // Init the testobjects
-            myObject = CircleObject(50.0,50.0,32.0,redCircle);
-            otherObject = CircleObject(100.0,100.0,32.0,purpleCircle);
+            myObject = CircleObject(50.0,50.0,32.0,purpleCircle);
+            otherObject = RectObject(200.0,200.0,64.0,greenRect);
 			//Main loop flag
 			bool quit = false;
 			//Event variable
@@ -334,7 +351,7 @@ int main(int argc, char* args[]){
 			//std::this_thread::sleep_for(std::chrono::milliseconds(1));
             myObject.calculateMove(xVelocity, yVelocity, otherObject);
                 if (moveBack) {
-                    myObject = CircleObject(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 32, redCircle);
+                    myObject = CircleObject(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 32, greenRect);
                     moveBack = false;
                 }
 			//Update the camera

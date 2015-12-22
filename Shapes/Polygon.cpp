@@ -150,5 +150,5 @@ bool Polygon::Intersect(Polygon& other)
         
     }
     
-    return false;
+    return true;
 }

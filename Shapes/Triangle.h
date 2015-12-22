@@ -4,10 +4,10 @@
 #ifndef TRIANGLE_H
 #define TRIANGLE_H
 
-#include "Shapes.h"
+#include "Polygon.h"
 
 
-class Triangle : public Shapes
+class Triangle : public Polygon
 {
 private:
 	float x1,x2,x3;
