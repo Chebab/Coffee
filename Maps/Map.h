@@ -4,20 +4,27 @@
 #define MAP_H
 
 #include "Tile.h"
-
+#include <vector>
+using namespace std;
 class Map {
 private:
 	Tile **mapArray;
-	int tileWidth, tileHeight;
+	unsigned int tileWidth, tileHeight;
 	int mapWidth, mapHeight;
+    vector<Tile*> startingTiles;
 
 public:
 	Map();
-	//~Map();
-	Map(int, int);
-	Tile* getNeighbours(int, int);
+	~Map();
+    Map(unsigned int, unsigned int);
+	vector<Tile*> getNeighbours(int, int);
+    vector<Tile*> getNeighbours(Tile*);
 	Tile* getTile(int,int);
 	void setTile(Tile,int,int);
+    bool setStartingTile(unsigned int, unsigned int);
+    
+    vector<Tile*> getStartingTiles();
+    Tile* initTile();
 	Tile* getTileFromPos(int, int);
 	void free();
 };

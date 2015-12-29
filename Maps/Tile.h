@@ -6,7 +6,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2_image/SDL_image.h>
-
+#include "Shapes.h"
 static const int TILE_SIZE 	= 32;
 //static const int INT_MAX	= 65535;
 
@@ -55,6 +55,19 @@ bool isWalkable(){
 	return walkable;
 }
 
+void setWalkable(bool beWalkable){
+    walkable=beWalkable;
+}
+
+    
+Point getPos(){
+    return Point(this->xCoordinate, this->yCoordinate);
+}
+    
+Rectangle getBoundries(){
+    return Rectangle(this->getPos(),TILE_SIZE);
+}
+
 SDL_Texture* getTexture(){
 	return text;
 }
@@ -77,6 +90,7 @@ void free(){
 	yCoordinate = 0;
 	isNull = true;
 	text = NULL;
+    walkable = false;
 }
 
 };

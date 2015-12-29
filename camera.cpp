@@ -11,7 +11,7 @@ Camera::~Camera(){
 	movey = 0;
 	VIEWPORT_WIDTH = 0;
 	VIEWPORT_HEIGHT = 0;
-	target = NULL;	
+	target = NULL;
 }
 
 Camera::Camera(int startingXpos, int startingYpos,
@@ -35,13 +35,13 @@ int Camera::getXpos(){
 int Camera::getYpos(){
 	return yCoordinate;
 }
-// adds the argument to the xCoordinate
+
 void Camera::setXpos(int addToPos){
-	xCoordinate += addToPos;
+	xCoordinate = addToPos;
 }
-// adds the argument to the yCoordinate
+
 void Camera::setYpos(int addToPos){
-	yCoordinate += addToPos;
+	yCoordinate = addToPos;
 }
 
 void Camera::setMoveValueX(int x){

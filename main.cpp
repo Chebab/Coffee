@@ -10,6 +10,7 @@
 #include "camera.h"
 #include "Shapes/Shapes.h"
 #include "ObjectTesters.h"
+#include "Player.h"
 
 #include <stdio.h>  /* defines FILENAME_MAX */
 #ifdef WINDOWS
@@ -51,23 +52,28 @@ SDL_Texture* redCircle = NULL;
 SDL_Texture* purpleCircle = NULL;
 SDL_Texture* greenRect = NULL;
 SDL_Texture* orangeRect = NULL;
+SDL_Texture* playPic = NULL;
 
-CircleObject myObject;
-RectObject otherObject;
+//CircleObject myObject;
+//RectObject otherObject;
 float xVelocity = 0;
 float yVelocity = 0;
-bool moveBack = false;
+//bool moveBack = false;
 
 //The Currently loaded map
-Map* loadedMap = NULL;
+
 
 // My temporary map
 int xTileLength = 12;
 int yTileLength = 10;
-Map myMap;
+//Map tempMap(5,5);
 
+Map* loadedMap = new Map(xTileLength,yTileLength);
 // The Camera for the game
 Camera cam;
+
+// The Player
+Player play;
 
 bool init() {
 
@@ -103,11 +109,11 @@ bool init() {
 
     
 	// Initialize one map
-	//myMap = Map(xTileLength, yTileLength);
-	//loadedMap = &myMap;
+    Tile* oldTile = loadedMap->getTile(xTileLength/2, yTileLength/2);
+    oldTile->setWalkable(false);
 
 	// Initialize the Camera
-	//cam = Camera( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, loadedMap);
+	cam = Camera( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, loadedMap);
 
 	return true;
 }
@@ -156,11 +162,18 @@ bool loadMedia(){
         printf( "Failed to load texture image!\n" );
         return false;
     }
+
+    playPic = loadTexture("Textures/32x32_player.png");
+    if( trans == NULL )
+    {
+        printf( "Failed to load texture image!\n" );
+        return false;
+    }
     
-    /*
 	//temp variable
 	Tile* temp = NULL;
 	//Setting the loaded texture to each of the tiles
+    
 	for(int i = 0; i<xTileLength;i++){
 		for(int j = 0; j<yTileLength; j++){
 			temp = loadedMap -> getTile(i,j);
@@ -173,7 +186,8 @@ bool loadMedia(){
 			}
 		}
 	}
-     */
+    
+    
 
 	return true;
 }
@@ -186,11 +200,15 @@ void close(){
     SDL_DestroyTexture(purpleCircle);
     SDL_DestroyTexture(greenRect);
     SDL_DestroyTexture(orangeRect);
+    SDL_DestroyTexture(playPic);
 	grass = NULL;
 	// Map free
-	loadedMap = NULL;
+    //delete loadedMap;
+	//loadedMap = NULL;
 	//cout << "about to free map" << endl;
-	myMap.free();
+	//myMap.~Map();
+    //play.~Player();
+    //cam.~Camera();
 	//cout << "map freed" << endl;
 	// Destroy the window
 	SDL_DestroyRenderer(gRenderer);
@@ -239,10 +257,12 @@ void drawScreen(){
 	
 	//Clear screen
 	SDL_RenderClear( gRenderer );
-	//cam.renderToCamera( gRenderer );
     
-    SDL_RenderCopy(gRenderer,myObject.texture,NULL,&myObject.drawSurface);
-    SDL_RenderCopy(gRenderer,otherObject.texture,NULL,&otherObject.drawSurface);
+
+	cam.renderToCamera( gRenderer );
+    play.render(gRenderer);
+    //SDL_RenderCopy(gRenderer,myObject.texture,NULL,&myObject.drawSurface);
+    //SDL_RenderCopy(gRenderer,otherObject.texture,NULL,&otherObject.drawSurface);
     
 	//SDL_Rect rect = {50, 50, 256, 256};
 	//SDL_RenderCopy(gRenderer, tree, NULL, &rect);
@@ -273,7 +293,7 @@ void handleKeyPressDown(int keycode){
             xVelocity = velo;
             break;
         case SDLK_SPACE:
-            moveBack = true;
+            //moveBack = true;
 		default:
 		break;
 	}
@@ -323,8 +343,14 @@ int main(int argc, char* args[]){
 		else
 		{
             // Init the testobjects
-            myObject = CircleObject(50.0,50.0,32.0,purpleCircle);
-            otherObject = RectObject(200.0,200.0,64.0,greenRect);
+            //myObject = CircleObject(50.0,50.0,32.0,purpleCircle);
+            //otherObject = RectObject(200.0,200.0,64.0,greenRect);
+            
+            // Init player
+            int startX = 20;
+            int startY = 20;
+            play = Player(startX, startY, loadedMap, loadedMap->getTileFromPos(startX, startY), playPic);
+            
 			//Main loop flag
 			bool quit = false;
 			//Event variable
@@ -349,15 +375,24 @@ int main(int argc, char* args[]){
 					}
 				}
 			//std::this_thread::sleep_for(std::chrono::milliseconds(1));
-            myObject.calculateMove(xVelocity, yVelocity, otherObject);
+            /*myObject.calculateMove(xVelocity, yVelocity, otherObject);
                 if (moveBack) {
                     myObject = CircleObject(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 32, greenRect);
                     moveBack = false;
                 }
+             */
+                bool moved = play.movePlayer(xVelocity, yVelocity);
+                if (!moved) {
+                    printf("Could not move\n");
+                }
+                
 			//Update the camera
-			cam.updateCamera();
+            //Camera that follows the player
+                //cam.setXpos(play.getXpos());
+                //cam.setYpos(play.getYpos());
+                //cam.updateCamera();
 			//draw the screen
-			drawScreen();
+                drawScreen();
 			}
 
 

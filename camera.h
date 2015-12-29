@@ -4,6 +4,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 #include "Maps/Map.h"
+#include "Player.h"
 class Camera {
 private:
 	int xCoordinate;
@@ -13,6 +14,7 @@ private:
 	int movex;
 	int movey;
 	Map* target;
+    
 public:
 	Camera();
 
@@ -22,9 +24,8 @@ public:
 
 	int getXpos();
 	int getYpos();
-	// adds the argument to the xCoordinate
+
 	void setXpos(int);
-	// adds the argument to the yCoordinate
 	void setYpos(int);
 
 	void setMoveValueX(int);

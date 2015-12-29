@@ -1,16 +1,20 @@
-//Player class
-
+//
+//  Player.h
+//  Coffe_Quest
+//
+//  Created by Viktor Johansson on 2015-12-27.
+//  Copyright © 2015 Viktor Johansson. All rights reserved.
+//
 #ifndef PLAYER_H
 #define PLAYER_H
 #include "Map.h"
+#include "Shapes.h"
 
-static const int PLAYER_RADIUS = 16;
+static const int PLAYER_RADIUS = TILE_SIZE/2;
 class Player{
 private:
-	int xpos;
-	int ypos;
-	int xVelocity;
-	int yVelocity;
+	float xpos;
+	float ypos;
 	//The map the player is currently on
 	Map* currentMap;
 	//The Tile the player is currently standing on
@@ -21,19 +25,18 @@ private:
 public:
 	Player(){
 		currentMap = NULL;
-		position = NULL;
 		visualPlayer = NULL;
+        xpos = 0;
+        ypos = 0;
 	}
 	~Player(){
 		currentMap = NULL;
-		position = NULL;
 		visualPlayer = NULL;
+        tilePosition = NULL;
 	}
-	Player(int startingXpos, int startingYpos, Map* map, Tile* startingTilePos, SDL_Texture texture){
+	Player(float startingXpos, float startingYpos, Map* map, Tile* startingTilePos, SDL_Texture* texture){
 		xpos = startingXpos;
 		ypos = startingYpos;
-		xVelocity = 0;
-		yVelocity = 0;
 		currentMap = map;
 		tilePosition = startingTilePos;
 		visualPlayer = texture;
@@ -46,48 +49,16 @@ public:
 		return ypos;
 	}
 
-	bool checkIfNotNULL(Tile){
-
+	bool checkIfNotNULL(Tile&){
+        return false;
 	}
-	void moveOnTile(){
-		bool moveOnX = true;
-		bool moveOnY = true;
-		Tile* targetTile = NULL;
-		int newXpos = xpos + PLAYER_RADIUS + xVelocity;
-		int newYpos = ypos + PLAYER_RADIUS + yVelocity;
-		
-
-		//Check on the x-axis
-		targetTile = currentMap -> getTileFromPos(newXpos, ypos);
-		if (targetTile == NULL){
-			moveOnX = false;
-		}
-		else{
-			moveOnX = moveOnX & targetTile -> isWalkable();
-		}
-
-		//Check on the y-axis
-
-		targetTile = currentMap -> getTileFromPos(xpos, newYpos);
-		if (targetTile == NULL){
-			moveOnY = false;
-		}
-		else {
-			moveOnY = moveOnY & targetTile -> isWalkable();
-		}
-		
-
-		//Check the final position
-		targetTile = currentMap -> getTileFromPos(newXpos, newYpos);
-		if (targetTile == NULL){
-			moveOnX = false;
-			moveOnY = false;
-		}
-		else{
-
-		}
-
-	}
+    
+    bool movePlayer(float xVelo, float yVelo);
+    
+    void render(SDL_Renderer* gRenderer){
+        SDL_Rect playerArea = {(int)xpos-PLAYER_RADIUS, (int) ypos-PLAYER_RADIUS,TILE_SIZE, TILE_SIZE};
+        SDL_RenderCopy(gRenderer, visualPlayer, NULL, &playerArea);
+    }
 
 };
 

@@ -3,7 +3,6 @@
 
 #include "Map.h"
 #include <iostream>
-using namespace std;
 
 Map::Map(){
 	mapArray 	= NULL;
@@ -12,9 +11,12 @@ Map::Map(){
 	mapWidth 	= 0;
 	mapHeight 	= 0;
 }
+Map::~Map(){
+    this->free();
+}
 
-Map::Map (int width, int height) {
-
+Map::Map(unsigned int width, unsigned int height) {
+    //TODO: Handle the case where width or height is 0
 	mapWidth = width * TILE_SIZE;
 	mapHeight = height * TILE_SIZE;
 	tileWidth 	= width;
@@ -37,21 +39,50 @@ Map::Map (int width, int height) {
 	int xpos = 0, ypos = 0;
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++){
-			mapArray[i][j] = Tile(xpos,ypos,false);
+			mapArray[i][j] = Tile(xpos,ypos,true);
 			xpos += TILE_SIZE;
 		}
 		xpos = 0;
 		ypos += TILE_SIZE;
 	}
 	//cout << "setting the tiles worked" << endl;
-	
+    setStartingTile(0, 0);
 }
 
 // get the Neighbours of the chosen tile
-// TODO: Is currently a dummyfunction
-Tile* Map::getNeighbours(int xpos, int ypos){
-	//TODO
-	return NULL;
+vector<Tile*> Map::getNeighbours(int xpos, int ypos){
+    vector<Tile*> neighbours;
+    
+    /*
+    The layout of the tiles
+     1 2 3
+     4 * 5
+     6 7 8
+     Should turn into
+     [1 2 3 4 5 6 7 8]
+     */
+    
+    // Get the pointer to tile 1
+    //x direction: --->
+    for (int xDir=xpos-1; xDir<=xpos+1; xDir++) {
+        for (int yDir=ypos-1; yDir<=ypos+1; yDir++) {
+            if (!(xDir==xpos && yDir==ypos)) {
+                neighbours.push_back(getTile(xDir, yDir));
+            }
+        }
+    }
+    
+    
+	return neighbours;
+}
+
+vector<Tile*> Map::getNeighbours(Tile* ptr){
+    
+    if (ptr==NULL) {
+        vector<Tile*> returnList;
+        return returnList;
+    }
+    return getNeighbours(ptr->getXpos(), ptr->getYpos());
 }
 
 // Get the numbered tile
@@ -69,23 +100,42 @@ Tile* Map::getTileFromPos(int xpos, int ypos){
 	return getTile(xpos/TILE_SIZE, ypos/TILE_SIZE);
 }
 
+bool Map::setStartingTile(unsigned int x,unsigned int y){
+    if (x<tileWidth && y<tileHeight) {
+        startingTiles.push_back(&mapArray[x][y]);
+        return true;
+    }
+    return false;
+}
+
 // Set a new Tile in the map
 void Map::setTile(Tile tile, int xpos, int ypos){
 	mapArray[ypos][xpos] = tile;
 }
 
+vector<Tile*> Map::getStartingTiles(){
+    return this->startingTiles;
+}
+
+Tile* Map::initTile(){
+    return startingTiles[0];
+}
 // Deallocate the Map
 void Map::free(){
+    startingTiles.~vector();
+    if (mapArray==NULL) {
+        return;
+    }
 	// free dynamically allocated memory
 	for( int i = 0 ; i < tileHeight; i++ ){
-    	delete[] mapArray[i]; // delete array within matrix
+    	delete [] mapArray[i]; // delete array within matrix
 	}
 	// delete actual matrix
 	delete[] mapArray;
 
 	// dereferencing the map
 	mapArray = NULL;
-
+    
 }
 
 /*
