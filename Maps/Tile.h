@@ -12,12 +12,14 @@ static const int TILE_SIZE 	= 32;
 
 class Tile {
 private:
+    //TODO: Tiles should not retain any information about what position it has
 	int xCoordinate;
 	int yCoordinate;
 	bool isNull;
+    
 	SDL_Texture* text;
 	bool walkable;
-	//SDL_Rect* sqr;
+	
 
 public:
 Tile (){
@@ -43,6 +45,12 @@ int getXpos() {
 }
 int getYpos() {
 	return yCoordinate;
+}
+int getXindex(){
+    return xCoordinate/TILE_SIZE;
+}
+int getYindex(){
+    return yCoordinate/TILE_SIZE;
 }
 bool isEmpty() {
 	return isNull;

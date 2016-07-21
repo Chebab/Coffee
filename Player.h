@@ -10,6 +10,7 @@
 #include "Map.h"
 #include "Shapes.h"
 
+
 static const int PLAYER_RADIUS = TILE_SIZE/2;
 class Player{
 private:

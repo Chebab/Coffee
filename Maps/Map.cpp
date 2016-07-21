@@ -82,7 +82,7 @@ vector<Tile*> Map::getNeighbours(Tile* ptr){
         vector<Tile*> returnList;
         return returnList;
     }
-    return getNeighbours(ptr->getXpos(), ptr->getYpos());
+    return getNeighbours(ptr->getXindex(), ptr->getYindex());
 }
 
 // Get the numbered tile

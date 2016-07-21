@@ -29,7 +29,7 @@ bool Player::movePlayer(float xVelo, float yVelo){
                 Rectangle tileBounds = tilePtr->getBoundries();
                 if (playerBounds.Intersect(tileBounds)) {
                     playerBounds.setXpos(xpos);
-                    playerBounds.setXpos(ypos);
+                    playerBounds.setYpos(ypos);
                     break;
                 }
             }
