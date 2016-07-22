@@ -139,32 +139,32 @@ bool loadMedia(){
 		return false;
 	}
     redCircle = loadTexture("Textures/64x64_circle.png");
-    if( trans == NULL )
+    if( redCircle == NULL )
     {
         printf( "Failed to load texture image!\n" );
         return false;
     }
     purpleCircle = loadTexture("Textures/64x64_circle_purp.png");
-    if( trans == NULL )
+    if( purpleCircle == NULL )
     {
         printf( "Failed to load texture image!\n" );
         return false;
     }
     greenRect = loadTexture("Textures/64x64_rect_green.png");
-    if( trans == NULL )
+    if( purpleCircle == NULL )
     {
         printf( "Failed to load texture image!\n" );
         return false;
     }
     orangeRect = loadTexture("Textures/64x64_rect_orange.png");
-    if( trans == NULL )
+    if( orangeRect == NULL )
     {
         printf( "Failed to load texture image!\n" );
         return false;
     }
 
     playPic = loadTexture("Textures/32x32_player.png");
-    if( trans == NULL )
+    if( playPic == NULL )
     {
         printf( "Failed to load texture image!\n" );
         return false;
