@@ -11,6 +11,7 @@
 #include "Shapes/Shapes.h"
 #include "ObjectTesters.h"
 #include "Player.h"
+#include "cTimer.h"
 
 #include <stdio.h>  /* defines FILENAME_MAX */
 #ifdef WINDOWS
@@ -75,6 +76,8 @@ Camera cam;
 // The Player
 Player play;
 
+// fps timer
+chTimer fpsTimer;
 bool init() {
 
 	if(	SDL_Init(SDL_INIT_VIDEO) < 0){
@@ -345,7 +348,8 @@ int main(int argc, char* args[]){
             // Init the testobjects
             //myObject = CircleObject(50.0,50.0,32.0,purpleCircle);
             //otherObject = RectObject(200.0,200.0,64.0,greenRect);
-            
+            Uint32 rendercount = 0;
+            fpsTimer.start();
             // Init player
             int startX = 20;
             int startY = 20;
@@ -385,14 +389,24 @@ int main(int argc, char* args[]){
                 if (!moved) {
                     printf("Could not move\n");
                 }
-                
+                //Calculate and correct fps
+                float avgFPS = rendercount / ( fpsTimer.GetTime() / 1000.f );
+                if( avgFPS > 2000000 )
+                {
+                    avgFPS = 0;
+                    rendercount = 0;
+                    fpsTimer.stop();
+                    fpsTimer.start();
+                }
 			//Update the camera
             //Camera that follows the player
                 //cam.setXpos(play.getXpos());
                 //cam.setYpos(play.getYpos());
                 //cam.updateCamera();
 			//draw the screen
+                printf("FPS: %f\n",avgFPS);
                 drawScreen();
+                ++rendercount;
 			}
 
 
