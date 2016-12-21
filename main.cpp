@@ -12,6 +12,7 @@
 #include "ObjectTesters.h"
 #include "Player.h"
 #include "cTimer.h"
+#include "cTexture.h"
 
 #include <stdio.h>  /* defines FILENAME_MAX */
 #ifdef WINDOWS
@@ -45,6 +46,8 @@ void drawScreen();
 SDL_Window* gWindow = NULL;
 
 SDL_Renderer* gRenderer = NULL;
+
+cTexture* testingText = NULL;
 
 SDL_Texture* grass = NULL;
 SDL_Texture* tree = NULL;
@@ -129,6 +132,13 @@ bool loadMedia(){
 		return false;
 	}
 
+    testingText = new cTexture();
+    if( !testingText->loadFromFile("Textures/grass.png", gRenderer) )
+    {
+        printf( "Failed to load texture image!\n" );
+        return false;
+    }
+    
 	tree = loadTexture("Textures/Basic_Tree_Texture_02.png");
 	if( tree == NULL )
 	{
@@ -204,6 +214,8 @@ void close(){
     SDL_DestroyTexture(greenRect);
     SDL_DestroyTexture(orangeRect);
     SDL_DestroyTexture(playPic);
+    
+    testingText->free();
 	grass = NULL;
 	// Map free
     //delete loadedMap;
