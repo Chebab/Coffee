@@ -195,10 +195,13 @@ bool loadMedia(){
 				cout << "Could not get tile " << i << "," << j << endl;
 			}
 			else{
-				temp -> setTexture(grass);
+                temp -> setTexture(testingText->getTexture());//setTexture(grass);
 			}
 		}
 	}
+    Tile* oldTile = loadedMap->getTile(xTileLength/2, yTileLength/2);
+    oldTile->setTexture(orangeRect);
+    
     
     
 
@@ -276,14 +279,6 @@ void drawScreen(){
 
 	cam.renderToCamera( gRenderer );
     play.render(gRenderer);
-    //SDL_RenderCopy(gRenderer,myObject.texture,NULL,&myObject.drawSurface);
-    //SDL_RenderCopy(gRenderer,otherObject.texture,NULL,&otherObject.drawSurface);
-    
-	//SDL_Rect rect = {50, 50, 256, 256};
-	//SDL_RenderCopy(gRenderer, tree, NULL, &rect);
-	//SDL_Rect rect1 = {75, 75, 256, 256};
-	//SDL_RenderCopy(gRenderer, trans, NULL, &rect1);
-	//Update screen
 	SDL_RenderPresent( gRenderer );
 }
 
@@ -390,13 +385,6 @@ int main(int argc, char* args[]){
 							break;
 					}
 				}
-			//std::this_thread::sleep_for(std::chrono::milliseconds(1));
-            /*myObject.calculateMove(xVelocity, yVelocity, otherObject);
-                if (moveBack) {
-                    myObject = CircleObject(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 32, greenRect);
-                    moveBack = false;
-                }
-             */
                 bool moved = play.movePlayer(xVelocity, yVelocity);
                 if (!moved) {
                     printf("Could not move\n");
@@ -412,9 +400,10 @@ int main(int argc, char* args[]){
                 }
 			//Update the camera
             //Camera that follows the player
-                //cam.setXpos(play.getXpos());
-                //cam.setYpos(play.getYpos());
-                //cam.updateCamera();
+                //TODO: Fix the camera so that is follows the player correctly
+                /*cam.setXpos(play.getXpos());
+                cam.setYpos(play.getYpos());
+                cam.updateCamera();*/
 			//draw the screen
                 printf("FPS: %f\n",avgFPS);
                 drawScreen();
