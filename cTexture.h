@@ -10,9 +10,11 @@
 #define cTexture_h
 #include <SDL2/SDL.h>
 #include <SDL2_image/SDL_image.h>
+#include <SDL2_ttf/SDL_ttf.h>
 #include <string>
 class cTexture{
 private:
+    
     SDL_Texture* texture;
     // Maybe include possibility to have several renderers
     SDL_Renderer* renderer;
@@ -33,10 +35,11 @@ public:
     }
     
     bool loadFromFile(std::string path, SDL_Renderer* gRenderer);
-#ifdef _SDL_TTF_H
+//#ifdef _SDL_TTF_H
     //Creates image from font string
-    bool loadFromRenderedText( std::string textureText, SDL_Color textColor );
-#endif
+    bool loadFromRenderedText( std::string textureText, SDL_Color textColor , TTF_Font* font,SDL_Renderer* gRenderer);
+//#endif
+    bool render(SDL_Renderer* gRenderer,int xpos,int ypos);
     void free();
     
 };

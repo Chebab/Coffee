@@ -1,6 +1,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2_image/SDL_image.h>
+#include <SDL2_ttf/SDL_ttf.h>
 #include <chrono>
 #include <thread>
 #include <stdio.h>
@@ -38,25 +39,18 @@ bool loadMedia();
 
 void close();
 
-
-SDL_Texture* loadTexture(std::string path);
-
 void drawScreen();
 
 SDL_Window* gWindow = NULL;
 
 SDL_Renderer* gRenderer = NULL;
 
-cTexture* testingText = NULL;
+TTF_Font* cFont = NULL;
 
-SDL_Texture* grass = NULL;
-SDL_Texture* tree = NULL;
-SDL_Texture* trans = NULL;
-SDL_Texture* redCircle = NULL;
-SDL_Texture* purpleCircle = NULL;
-SDL_Texture* greenRect = NULL;
-SDL_Texture* orangeRect = NULL;
-SDL_Texture* playPic = NULL;
+cTexture* grass        = new cTexture();
+cTexture* orangeRect   = new cTexture();
+cTexture* playPic      = new cTexture();
+cTexture* fpsText      = new cTexture();
 
 //CircleObject myObject;
 //RectObject otherObject;
@@ -104,14 +98,21 @@ bool init() {
 		printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
 		return false;
 	}
-
 	SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+    
+    // Initialize image loading
 	int imgFlags = IMG_INIT_PNG;
 	if( !( IMG_Init( imgFlags ) & imgFlags ) )
 	{
 		printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
 		return false;
 	}
+    //Initialize SDL_ttf
+    if( TTF_Init() == -1 )
+    {
+        printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
+        return false;
+    }
 
     
 	// Initialize one map
@@ -125,65 +126,46 @@ bool init() {
 }
 
 bool loadMedia(){
-	grass = loadTexture( "Textures/grass.png" );
-	if( grass == NULL )
-	{
-		printf( "Failed to load texture image!\n" );
-		return false;
-	}
 
-    testingText = new cTexture();
-    if( !testingText->loadFromFile("Textures/grass.png", gRenderer) )
-    {
-        printf( "Failed to load texture image!\n" );
-        return false;
-    }
-    
-	tree = loadTexture("Textures/Basic_Tree_Texture_02.png");
-	if( tree == NULL )
-	{
-		printf( "Failed to load texture image!\n" );
-		return false;
-	}
-	trans = loadTexture("Textures/Transparent_Overlay_Dark.png");
-	if( trans == NULL )
-	{
-		printf( "Failed to load texture image!\n" );
-		return false;
-	}
-    redCircle = loadTexture("Textures/64x64_circle.png");
-    if( redCircle == NULL )
-    {
-        printf( "Failed to load texture image!\n" );
-        return false;
-    }
-    purpleCircle = loadTexture("Textures/64x64_circle_purp.png");
-    if( purpleCircle == NULL )
-    {
-        printf( "Failed to load texture image!\n" );
-        return false;
-    }
-    greenRect = loadTexture("Textures/64x64_rect_green.png");
-    if( purpleCircle == NULL )
-    {
-        printf( "Failed to load texture image!\n" );
-        return false;
-    }
-    orangeRect = loadTexture("Textures/64x64_rect_orange.png");
-    if( orangeRect == NULL )
+    //grass = new cTexture();
+    if( !grass->loadFromFile("Textures/grass.png", gRenderer) )
     {
         printf( "Failed to load texture image!\n" );
         return false;
     }
 
-    playPic = loadTexture("Textures/32x32_player.png");
-    if( playPic == NULL )
+    if( !orangeRect->loadFromFile("Textures/64x64_rect_orange.png", gRenderer) )
+    {
+        printf( "Failed to load texture image!\n" );
+        return false;
+    }
+    if( !playPic->loadFromFile("Textures/32x32_player.png", gRenderer) )
     {
         printf( "Failed to load texture image!\n" );
         return false;
     }
     
-	//temp variable
+    //Open the font
+    cFont = TTF_OpenFont( "Textures/lazy.ttf", 26 );
+    if( cFont == NULL )
+    {
+        printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
+        return false;
+    }
+    else
+    {
+        //Render text
+        SDL_Color textColor = { 0, 0, 0 };
+        if( !fpsText->loadFromRenderedText( "The quick brown fox jumps over the lazy dog", textColor,cFont,gRenderer ) )
+        {
+            printf( "Failed to render text texture!\n" );
+            return false;
+        }
+    }
+    
+    
+    
+	
 	Tile* temp = NULL;
 	//Setting the loaded texture to each of the tiles
     
@@ -195,12 +177,12 @@ bool loadMedia(){
 				cout << "Could not get tile " << i << "," << j << endl;
 			}
 			else{
-                temp -> setTexture(testingText->getTexture());//setTexture(grass);
+                temp -> setTexture(grass->getTexture());//setTexture(grass);
 			}
 		}
 	}
     Tile* oldTile = loadedMap->getTile(xTileLength/2, yTileLength/2);
-    oldTile->setTexture(orangeRect);
+    oldTile->setTexture(orangeRect->getTexture());
     
     
     
@@ -209,17 +191,11 @@ bool loadMedia(){
 }
 void close(){
 	//Free loaded image
-	SDL_DestroyTexture(grass);
-    SDL_DestroyTexture(tree);
-    SDL_DestroyTexture(trans);
-    SDL_DestroyTexture(redCircle);
-    SDL_DestroyTexture(purpleCircle);
-    SDL_DestroyTexture(greenRect);
-    SDL_DestroyTexture(orangeRect);
-    SDL_DestroyTexture(playPic);
-    
-    testingText->free();
-	grass = NULL;
+    grass->free();
+    playPic->free();
+    orangeRect->free();
+    loadedMap->free();
+    fpsText->free();
 	// Map free
     //delete loadedMap;
 	//loadedMap = NULL;
@@ -235,40 +211,6 @@ void close(){
 	gRenderer = NULL;
 }
 
-SDL_Texture* loadTexture( std::string path){
-	//The final texture
-	SDL_Texture* newTexture = NULL;
-
-	//Load image at specified path
-    /*
-    char cCurrentPath[FILENAME_MAX];
-    
-    if (!GetCurrentDir(cCurrentPath, sizeof(cCurrentPath)))
-    {
-        return nullptr;
-    }
-    printf ("The current working directory is %s", cCurrentPath);
-     */
-	SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
-	if( loadedSurface == NULL )
-	{
-		printf( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
-	}
-	else
-	{
-		//Create texture from surface pixels
-        newTexture = SDL_CreateTextureFromSurface( gRenderer, loadedSurface );
-		if( newTexture == NULL )
-		{
-			printf( "Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
-		}
-
-		//Get rid of old loaded surface
-		SDL_FreeSurface( loadedSurface );
-	}
-
-	return newTexture;
-}
 
 void drawScreen(){
 
@@ -279,6 +221,8 @@ void drawScreen(){
 
 	cam.renderToCamera( gRenderer );
     play.render(gRenderer);
+    fpsText->render(gRenderer,10,350);
+    
 	SDL_RenderPresent( gRenderer );
 }
 
@@ -360,7 +304,7 @@ int main(int argc, char* args[]){
             // Init player
             int startX = 20;
             int startY = 20;
-            play = Player(startX, startY, loadedMap, loadedMap->getTileFromPos(startX, startY), playPic);
+            play = Player(startX, startY, loadedMap, loadedMap->getTileFromPos(startX, startY), playPic->getTexture());
             
 			//Main loop flag
 			bool quit = false;
@@ -405,7 +349,10 @@ int main(int argc, char* args[]){
                 cam.setYpos(play.getYpos());
                 cam.updateCamera();*/
 			//draw the screen
-                printf("FPS: %f\n",avgFPS);
+                SDL_Color textColor = { 0, 0, 0 };
+                fpsText->loadFromRenderedText(to_string((int)avgFPS), textColor, cFont, gRenderer);
+                
+                //printf("FPS: %f\n",avgFPS);
                 drawScreen();
                 ++rendercount;
 			}
