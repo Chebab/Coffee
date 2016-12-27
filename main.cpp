@@ -356,14 +356,14 @@ int main(int argc, char* args[]){
                 cam.setYpos(play.getYpos());
                 cam.updateCamera();*/
 			//draw the screen
-                SDL_Color textColor = { 0, 0, 0 };
-                // Memmory problems DO NOT USE
-                fpsText->loadFromRenderedText(to_string((int)avgFPS), textColor, cFont, gRenderer);
                 
                 //printf("FPS: %f\n",avgFPS);
                 
                 if (1.0f/(float)FPS < renderTimer.GetTime() / 1000.f) {
                     renderTimer.stop();
+                    SDL_Color textColor = { 0, 0, 0 };
+                    // Memmory problems DO NOT USE
+                    fpsText->loadFromRenderedText(to_string((int)avgFPS), textColor, cFont, gRenderer);
                     drawScreen();
                     ++rendercount;
                     renderTimer.start();
