@@ -21,9 +21,10 @@ cTexture::~cTexture(){
 void cTexture::free(){
     textHeight  = 0;
     textWidth   = 0;
-    if (!texture) {
+    if (texture) {
         SDL_DestroyTexture(texture);
     }
+    texture=NULL;
 }
 
 bool cTexture::loadFromFile(std::string path, SDL_Renderer* gRenderer){
@@ -62,7 +63,7 @@ bool cTexture::loadFromFile(std::string path, SDL_Renderer* gRenderer){
 bool cTexture::loadFromRenderedText( std::string textureText, SDL_Color textColor,TTF_Font* font,SDL_Renderer* gRenderer )
 {
     //Get rid of preexisting texture
-    free();
+    this->free();
     //Render text surface
     SDL_Surface* textSurface = TTF_RenderText_Solid( font, textureText.c_str(), textColor );
     if( textSurface == NULL )

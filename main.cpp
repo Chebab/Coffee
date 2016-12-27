@@ -24,7 +24,8 @@
 #define GetCurrentDir getcwd
 #endif
 
-
+#define GAME_FREQUENCY 120 // 1/s
+#define FPS 60
 
 
 
@@ -52,14 +53,13 @@ cTexture* orangeRect   = new cTexture();
 cTexture* playPic      = new cTexture();
 cTexture* fpsText      = new cTexture();
 
-//CircleObject myObject;
-//RectObject otherObject;
+
+
 float xVelocity = 0;
 float yVelocity = 0;
 //bool moveBack = false;
 
-//The Currently loaded map
-
+// Game update time
 
 // My temporary map
 int xTileLength = 12;
@@ -75,6 +75,8 @@ Player play;
 
 // fps timer
 chTimer fpsTimer;
+chTimer gameTimer;
+chTimer renderTimer;
 bool init() {
 
 	if(	SDL_Init(SDL_INIT_VIDEO) < 0){
@@ -146,7 +148,7 @@ bool loadMedia(){
     }
     
     //Open the font
-    cFont = TTF_OpenFont( "Textures/lazy.ttf", 26 );
+    cFont = TTF_OpenFont( "Textures/Oswald-Bold.ttf", 36 );
     if( cFont == NULL )
     {
         printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
@@ -196,6 +198,7 @@ void close(){
     orangeRect->free();
     loadedMap->free();
     fpsText->free();
+    
 	// Map free
     //delete loadedMap;
 	//loadedMap = NULL;
@@ -228,7 +231,7 @@ void drawScreen(){
 
 void handleKeyPressDown(int keycode){
 	//cout << "derp" << endl;
-    const float velo =0.5;
+    const float velo =1.0f;
 	switch(keycode) {
 		case SDLK_UP:
 			//cam.setMoveValueY(-1);
@@ -296,11 +299,10 @@ int main(int argc, char* args[]){
 		}
 		else
 		{
-            // Init the testobjects
-            //myObject = CircleObject(50.0,50.0,32.0,purpleCircle);
-            //otherObject = RectObject(200.0,200.0,64.0,greenRect);
             Uint32 rendercount = 0;
             fpsTimer.start();
+            gameTimer.start();
+            renderTimer.start();
             // Init player
             int startX = 20;
             int startY = 20;
@@ -329,9 +331,14 @@ int main(int argc, char* args[]){
 							break;
 					}
 				}
-                bool moved = play.movePlayer(xVelocity, yVelocity);
-                if (!moved) {
-                    printf("Could not move\n");
+                if (1.0f/(float)GAME_FREQUENCY < gameTimer.GetTime()/1000.0f)
+                {
+                    gameTimer.stop();
+                    bool moved = play.movePlayer(xVelocity, yVelocity);
+                    if (!moved) {
+                        printf("Could not move\n");
+                    }
+                    gameTimer.start();
                 }
                 //Calculate and correct fps
                 float avgFPS = rendercount / ( fpsTimer.GetTime() / 1000.f );
@@ -350,11 +357,17 @@ int main(int argc, char* args[]){
                 cam.updateCamera();*/
 			//draw the screen
                 SDL_Color textColor = { 0, 0, 0 };
+                // Memmory problems DO NOT USE
                 fpsText->loadFromRenderedText(to_string((int)avgFPS), textColor, cFont, gRenderer);
                 
                 //printf("FPS: %f\n",avgFPS);
-                drawScreen();
-                ++rendercount;
+                
+                if (1.0f/(float)FPS < renderTimer.GetTime() / 1000.f) {
+                    renderTimer.stop();
+                    drawScreen();
+                    ++rendercount;
+                    renderTimer.start();
+                }
 			}
 
 
