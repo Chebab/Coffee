@@ -53,8 +53,6 @@ cTexture* orangeRect   = new cTexture();
 cTexture* playPic      = new cTexture();
 cTexture* fpsText      = new cTexture();
 
-
-
 float xVelocity = 0;
 float yVelocity = 0;
 //bool moveBack = false;
@@ -115,7 +113,6 @@ bool init() {
         printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
         return false;
     }
-
     
 	// Initialize one map
     Tile* oldTile = loadedMap->getTile(xTileLength/2, yTileLength/2);

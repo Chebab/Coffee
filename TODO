@@ -1,7 +1,5 @@
 TODO
 * Check the maximum image size one can fit inside a SDLRect
 * Expand the Map such that a file can decide how a map should look like
-* Fix timers for frame update
-* Fix timers for player update
 * Integrate objects on maps
 
