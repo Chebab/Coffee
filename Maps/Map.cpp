@@ -3,6 +3,8 @@
 
 #include "Map.h"
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 Map::Map(){
 	mapArray 	= NULL;
@@ -14,10 +16,55 @@ Map::Map(){
 Map::~Map(){
     this->free();
 }
+Map::Map(std::string inFile){
+    std::string line;
+    istringstream iss;
+    printf("filename: %s",inFile.c_str());
+    ifstream mapfile(inFile,ios::in);
+    vector<vector<string>> rows;
+    unsigned int height = 0;
+    unsigned int width = 0;
+    if (mapfile.is_open()){
+        while (getline(mapfile, line)) {
+            
+            // Open the file
+            iss.str(line);
+            vector<string> tokens{istream_iterator<string>{iss},istream_iterator<string>{}};
+            /*
+            for (int i = 0; i<tokens.size(); i++) {
+                printf("item_%d: %s\n",i,tokens[i].c_str());
+            }
+             */
+            rows.push_back(tokens);
+            if (width < (unsigned int )tokens.size()) {
+                width=(unsigned int)tokens.size();
+            }
+            height++;
+            
+        }
+        mapfile.close();
+    }
+    if(height && width){
+        mapWidth  = width * TILE_SIZE;
+        mapHeight = height * TILE_SIZE;
+        tileWidth 	= width;
+        tileHeight 	= height;
+    }
+    else{
+        // Dummy code atm
+        mapArray 	= NULL;
+        tileWidth 	= 0;
+        tileHeight 	= 0;
+        mapWidth 	= 0;
+        mapHeight 	= 0;
+    }
+    
+    
+}
 
 Map::Map(unsigned int width, unsigned int height) {
     //TODO: Handle the case where width or height is 0
-	mapWidth = width * TILE_SIZE;
+	mapWidth  = width * TILE_SIZE;
 	mapHeight = height * TILE_SIZE;
 	tileWidth 	= width;
 	tileHeight 	= height;
@@ -33,7 +80,7 @@ Map::Map(unsigned int width, unsigned int height) {
 	for (int i = 0; i <height; i++) {
 		mapArray[i] = new Tile[width];
 	}
-	//cout << "Map creation worked" << endl;
+	
 
 	// Loop for setting the position of all the Tiles
 	int xpos = 0, ypos = 0;

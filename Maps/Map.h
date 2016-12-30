@@ -16,6 +16,7 @@ private:
 public:
 	Map();
 	~Map();
+    Map(std::string inFile);
     Map(unsigned int, unsigned int);
 	vector<Tile*> getNeighbours(int, int);
     vector<Tile*> getNeighbours(Tile*);

@@ -121,6 +121,8 @@ bool init() {
 	// Initialize the Camera
 	cam = Camera( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, loadedMap);
 
+    Map("testtext.txt");
+    
 	return true;
 }
 
