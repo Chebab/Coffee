@@ -19,7 +19,7 @@ Map::~Map(){
 Map::Map(std::string inFile){
     std::string line;
     istringstream iss;
-    printf("filename: %s",inFile.c_str());
+    printf("filename: %s\n",inFile.c_str());
     ifstream mapfile(inFile,ios::in);
     vector<vector<string>> rows;
     unsigned int height = 0;

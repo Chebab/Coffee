@@ -14,6 +14,7 @@
 #include "Player.h"
 #include "cTimer.h"
 #include "cTexture.h"
+#include "texture_info.h"
 
 #include <stdio.h>  /* defines FILENAME_MAX */
 #ifdef WINDOWS
@@ -47,12 +48,12 @@ SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
 
 TTF_Font* cFont = NULL;
-
+/*
 cTexture* grass        = new cTexture();
 cTexture* orangeRect   = new cTexture();
 cTexture* playPic      = new cTexture();
 cTexture* fpsText      = new cTexture();
-
+*/
 float xVelocity = 0;
 float yVelocity = 0;
 //bool moveBack = false;
@@ -121,7 +122,7 @@ bool init() {
 	// Initialize the Camera
 	cam = Camera( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, loadedMap);
 
-    Map("testtext.txt");
+    //Map("testtext.txt");
     
 	return true;
 }
@@ -140,6 +141,20 @@ bool loadMedia(){
         printf( "Failed to load texture image!\n" );
         return false;
     }
+    // Load all tile textures
+    for (int i=0; i<tile_texture_files.size(); i++) {
+        cTexture load_text;
+        if( !load_text.loadFromFile(tile_texture_files[i], gRenderer) )
+        {
+            printf( "Failed to load texture image!\n" );
+            return false;
+        }
+        else{
+            tile_texture.push_back(load_text);
+        }
+    }
+    printf("loaded textures: %d\n",(int)tile_texture.size());
+    
     if( !playPic->loadFromFile("Textures/32x32_player.png", gRenderer) )
     {
         printf( "Failed to load texture image!\n" );

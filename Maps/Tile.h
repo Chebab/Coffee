@@ -7,6 +7,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2_image/SDL_image.h>
 #include "Shapes.h"
+#include "texture_info.h"
 static const int TILE_SIZE 	= 32;
 //static const int INT_MAX	= 65535;
 
