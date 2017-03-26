@@ -5,6 +5,7 @@
 
 #include "Tile.h"
 #include <vector>
+#include "tile_info.h"
 using namespace std;
 class Map {
 private:

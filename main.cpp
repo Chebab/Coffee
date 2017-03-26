@@ -129,7 +129,9 @@ bool init() {
 
 bool loadMedia(){
 
-    //grass = new cTexture();
+    // Old way of loading textures
+    // ------------------------------
+    /*
     if( !grass->loadFromFile("Textures/grass.png", gRenderer) )
     {
         printf( "Failed to load texture image!\n" );
@@ -141,10 +143,14 @@ bool loadMedia(){
         printf( "Failed to load texture image!\n" );
         return false;
     }
+     */
+    // ------------------------------
+    
     // Load all tile textures
     for (int i=0; i<tile_texture_files.size(); i++) {
-        cTexture load_text;
-        if( !load_text.loadFromFile(tile_texture_files[i], gRenderer) )
+        cTexture* load_text = new cTexture();
+        printf("Textpath: %s\n",tile_texture_files[i].c_str());
+        if( !load_text -> loadFromFile(tile_texture_files[i], gRenderer) )
         {
             printf( "Failed to load texture image!\n" );
             return false;
@@ -153,13 +159,35 @@ bool loadMedia(){
             tile_texture.push_back(load_text);
         }
     }
-    printf("loaded textures: %d\n",(int)tile_texture.size());
     
-    if( !playPic->loadFromFile("Textures/32x32_player.png", gRenderer) )
-    {
-        printf( "Failed to load texture image!\n" );
-        return false;
+    grass = tile_texture[i_grass];
+    orangeRect = tile_texture[i_wall];
+    
+    printf("loaded tile textures: %d\n",(int)tile_texture.size());
+    // Load all player textures
+    for (int i=0; i<player_texture_files.size(); i++) {
+        cTexture* load_text = new cTexture();
+        printf("Textpath: %s\n",player_texture_files[i].c_str());
+        if( !load_text -> loadFromFile(player_texture_files[i], gRenderer) )
+        {
+            printf( "Failed to load texture image!\n" );
+            return false;
+        }
+        else{
+            player_texture.push_back(load_text);
+        }
     }
+    
+    // Set the starting pic
+    playPic = player_texture[0];
+    
+    
+    printf("loaded player textures: %d\n",(int)player_texture.size());
+//    if( !playPic->loadFromFile("Textures/32x32_player.png", gRenderer) )
+//    {
+//        printf( "Failed to load texture image!\n" );
+//        return false;
+//    }
     
     //Open the font
     cFont = TTF_OpenFont( "Textures/Oswald-Bold.ttf", 36 );
@@ -206,10 +234,20 @@ bool loadMedia(){
 	return true;
 }
 void close(){
+    
+    // Close all tile texures
+    for (int i = 0; i<tile_texture.size(); i++) {
+        tile_texture[i]->free();
+    }
+    
+    // Close all player textrues
+    for (int i = 0; i<player_texture.size(); i++) {
+        player_texture[i]->free();
+    }
 	//Free loaded image
-    grass->free();
-    playPic->free();
-    orangeRect->free();
+    //grass->free();
+    //playPic->free();
+    //orangeRect->free();
     loadedMap->free();
     fpsText->free();
     

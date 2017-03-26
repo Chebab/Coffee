@@ -40,6 +40,29 @@ Tile (int xpos, int ypos, bool walk){
 	yCoordinate = ypos;
 	text = NULL;
 }
+Tile (int xpos, int ypos, bool walk,SDL_Texture* txr){
+    isNull = false;
+    walkable = walk;
+    xCoordinate = xpos;
+    yCoordinate = ypos;
+    text = txr;
+}
+    
+Tile(Tile& tile){
+    xCoordinate=tile.xCoordinate;
+    yCoordinate=tile.yCoordinate;
+    isNull=tile.isNull;
+    text=tile.text;
+    walkable=tile.walkable;
+}
+    
+Tile(Tile& tile,int xpos,int ypos,bool walk){
+    xCoordinate=xpos;
+    yCoordinate=ypos;
+    isNull=tile.isNull;
+    text=tile.text;
+    walkable=walk;
+}
 
 int getXpos() {
 	return xCoordinate;
