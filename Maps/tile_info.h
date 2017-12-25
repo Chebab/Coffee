@@ -17,6 +17,7 @@ enum tile_type{
     wall_tile
 };
 
+// To be used later for making tiles more easy to use
 static std::vector<Tile> tiles;
 
 #endif /* tile_info_h */

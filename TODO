@@ -2,4 +2,4 @@ TODO
 * Check the maximum image size one can fit inside a SDLRect
 * Expand the Map such that a file can decide how a map should look like
 * Integrate objects on maps
-
+* Replace file reading from ">>" to stringstreams

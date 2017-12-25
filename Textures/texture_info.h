@@ -32,8 +32,9 @@ static std::vector<std::string> player_texture_files =
 };
 
 // Instead of textures, make sure that different tiles are represented (perhaps add copy method)
-static std::vector<cTexture*> tile_texture;
-static std::vector<cTexture*> player_texture;
+
+extern std::vector<cTexture*> tile_texture;
+extern std::vector<cTexture*> player_texture;
 
 
 enum tile_texture_num {
